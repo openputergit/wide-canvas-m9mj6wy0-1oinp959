@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Effortless Esports - BGMI Professional Gaming</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0a1929;
+            color: #ffffff;
+            scroll-behavior: smooth;
+        }
+        .orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(45deg, #0a1929, #1a3b5c);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        .loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background-color: rgba(0,0,0,0.7);
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }
+        .news-ticker {
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .news-ticker .ticker-content {
+            animation: ticker 30s linear infinite;
+            display: inline-block;
+            padding-right: 100%;
+        }
+        @keyframes ticker {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+        .matches-scroll {
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: thin;
+            scrollbar-color: #1a3b5c #0a1929;
+        }
+        .matches-scroll::-webkit-scrollbar {
+            height: 6px;
+        }
+        .matches-scroll::-webkit-scrollbar-track {
+            background: #0a1929;
+        }
+        .matches-scroll::-webkit-scrollbar-thumb {
+            background: #1a3b5c;
+            border-radius: 10px;
+        }
+        .game-stats {
+            position: relative;
+            overflow: hidden;
+        }
+        .game-stats:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(66, 153, 225, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .game-stats:hover:before {
+            left: 100%;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .modal-content {
+            background-color: #0f2942;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading" id="loadingSpinner">
+        <div class="flex flex-col items-center">
+            <div class="animate-spin rounded-full h-32 w-32 border-t-4 border-b-4 border-blue-500 mb-4"></div>
+            <p class="text-blue-500 text-xl">Loading...</p>
+        </div>
+    </div>
+
+    <!-- News Ticker -->
+    <div class="bg-blue-600 text-white py-2 news-ticker">
+        <div class="ticker-content">
+            🎮 Registration open for BGMI Pro League Season 5 | 
+            🏆 Join our Discord for daily scrims and practice matches | 
+            🎯 Team Dominators crowned Winter Championship 2023 winners | 
+            📱 Download the Effortless Esports app for live match updates | 
+            💰 Total prize pool for upcoming tournaments: ₹500,000 | 
+            🎮 Registration open for BGMI Pro League Season 5
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="bg-[#0a1929] sticky top-0 w-full z-50 shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <h1 class="orbitron text-xl md:text-2xl font-bold text-blue-500">EFFORTLESS ESPORTS</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="text-gray-300 hover:text-blue-500 px-3 py-2 transition-colors duration-200">Home</a>
+                        <a href="#about" class="text-gray-300 hover:text-blue-500 px-3 py-2 transition-colors duration-200">About Us</a>
+                        <a href="#tournaments" class="text-gray-300 hover:text-blue-500 px-3 py-2 transition-colors duration-200">Tournaments</a>
+                        <a href="#team" class="text-gray-300 hover:text-blue-500 px-3 py-2 transition-colors duration-200">Our Team</a>
+                        <a href="#contact" class="text-gray-300 hover:text-blue-500 px-3 py-2 transition-colors duration-200">Contact</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-300">
+                        <i class="bi bi-list text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-[#0a1929] pb-3 px-4">
+            <a href="#home" class="block text-gray-300 hover:text-blue-500 py-2">Home</a>
+            <a href="#about" class="block text-gray-300 hover:text-blue-500 py-2">About Us</a>
+            <a href="#tournaments" class="block text-gray-300 hover:text-blue-500 py-2">Tournaments</a>
+            <a href="#team" class="block text-gray-300 hover:text-blue-500 py-2">Our Team</a>
+            <a href="#contact" class="block text-gray-300 hover:text-blue-500 py-2">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient min-h-screen flex items-center justify-center pt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="grid md:grid-cols-2 gap-8 items-center">
+                <div class="text-left">
+                    <h1 class="orbitron text-4xl md:text-6xl font-bold text-blue-500 mb-6">DOMINATE THE BATTLEGROUND</h1>
+                    <p class="text-xl md:text-2xl text-gray-300 mb-8">Join India's elite BGMI esports community</p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#tournaments" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-8 rounded-full transition duration-300">View Tournaments</a>
+                        <button id="analyzeBtn" class="bg-transparent border-2 border-blue-500 hover:bg-blue-500 hover:bg-opacity-20 text-blue-500 font-bold py-3 px-8 rounded-full transition duration-300">Battle Analysis</button>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="absolute -top-10 -right-10 w-64 h-64 bg-blue-500 rounded-full opacity-20 blur-3xl"></div>
+                    <img src="https://images.unsplash.com/photo-1614465000772-1b302f406c67?q=80&w=2670&auto=format&fit=crop" alt="BGMI Gaming" class="rounded-lg shadow-2xl relative z-10">
+                </div>
+            </div>
+            
+            <!-- Live Matches Section -->
+            <div class="mt-16">
+                <h2 class="orbitron text-2xl font-bold text-blue-500 mb-6">LIVE MATCHES</h2>
+                <div class="matches-scroll pb-4">
+                    <div class="inline-flex gap-4">
+                        <div class="bg-[#0f2942] p-4 rounded-lg min-w-[300px]">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-red-500 flex items-center"><i class="bi bi-broadcast-pin mr-2"></i> LIVE</span>
+                                <span class="text-gray-400 text-sm">Group A</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-700 rounded-full"></div>
+                                    <span class="ml-2">Team Alpha</span>
+                                </div>
+                                <span class="text-xl font-bold">VS</span>
+                                <div class="flex items-center">
+                                    <span class="mr-2">Team Omega</span>
+                                    <div class="w-8 h-8 bg-gray-700 rounded-full"></div>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded text-sm transition duration-300">Watch Now</button>
+                        </div>
+                        <div class="bg-[#0f2942] p-4 rounded-lg min-w-[300px]">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-yellow-500 flex items-center"><i class="bi bi-clock mr-2"></i> UPCOMING</span>
+                                <span class="text-gray-400 text-sm">Group B</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-700 rounded-full"></div>
+                                    <span class="ml-2">Team Blitz</span>
+                                </div>
+                                <span class="text-xl font-bold">VS</span>
+                                <div class="flex items-center">
+                                    <span class="mr-2">Team Phoenix</span>
+                                    <div class="w-8 h-8 bg-gray-700 rounded-full"></div>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 rounded text-sm transition duration-300">Reminder</button>
+                        </div>
+                        <div class="bg-[#0f2942] p-4 rounded-lg min-w-[300px]">
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-yellow-500 flex items-center"><i class="bi bi-clock mr-2"></i> UPCOMING</span>
+                                <span class="text-gray-400 text-sm">Group C</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-700 rounded-full"></div>
+                                    <span class="ml-2">Team Venom</span>
+                                </div>
+                                <span class="text-xl font-bold">VS</span>
+                                <div class="flex items-center">
+                                    <span class="mr-2">Team Titans</span>
+                                    <div class="w-8 h-8 bg-gray-700 rounded-full"></div>
+                                </div>
+                            </div>
+                            <button class="w-full mt-4 bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 rounded text-sm transition duration-300">Reminder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-[#0f2942]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="orbitron text-3xl md:text-4xl font-bold text-center text-blue-500 mb-12">ABOUT US</h2>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop" alt="Esports Arena" class="rounded-lg shadow-2xl">
+                </div>
+                <div>
+                    <p class="text-gray-300 text-lg mb-6">Effortless Esports is a premier BGMI (Battlegrounds Mobile India) esports organization dedicated to nurturing talent and creating professional gaming opportunities. We organize tournaments, develop players, and contribute to the growth of the Indian esports ecosystem.</p>
+                    <div class="grid grid-cols-2 gap-6 text-center mb-8">
+                        <div class="bg-[#0a1929] p-6 rounded-lg game-stats">
+                            <h3 class="text-blue-500 text-3xl font-bold mb-2" id="tournamentCounter">0+</h3>
+                            <p class="text-gray-400">Tournaments Hosted</p>
+                        </div>
+                        <div class="bg-[#0a1929] p-6 rounded-lg game-stats">
+                            <h3 class="text-blue-500 text-3xl font-bold mb-2" id="playerCounter">0+</h3>
+                            <p class="text-gray-400">Active Players</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-6 text-center">
+                        <div class="bg-[#0a1929] p-6 rounded-lg game-stats">
+                            <h3 class="text-blue-500 text-3xl font-bold mb-2" id="teamCounter">0+</h3>
+                            <p class="text-gray-400">Professional Teams</p>
+                        </div>
+                        <div class="bg-[#0a1929] p-6 rounded-lg game-stats">
+                            <h3 class="text-blue-500 text-3xl font-bold mb-2" id="prizepoolCounter">₹0+</h3>
+                            <p class="text-gray-400">Prize Money Awarded</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Our Approach Section -->
+            <div class="mt-20">
+                <h3 class="text-2xl font-bold text-white mb-8 text-center">OUR APPROACH</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-[#0a1929] p-6 rounded-lg card-hover">
+                        <div class="text-blue-500 text-4xl mb-4"><i class="bi bi-trophy"></i></div>
+                        <h4 class="text-xl font-bold text-white mb-2">Professional Tournaments</h4>
+                        <p class="text-gray-400">We organize high-quality tournaments with substantial prize pools to foster competitive gaming.</p>
+                    </div>
+                    <div class="bg-[#0a1929] p-6 rounded-lg card-hover">
+                        <div class="text-blue-500 text-4xl mb-4"><i class="bi bi-people"></i></div>
+                        <h4 class="text-xl font-bold text-white mb-2">Talent Development</h4>
+                        <p class="text-gray-400">We identify and nurture promising BGMI players through coaching and structured practice sessions.</p>
+                    </div>
+                    <div class="bg-[#0a1929] p-6 rounded-lg card-hover">
+                        <div class="text-blue-500 text-4xl mb-4"><i class="bi bi-broadcast"></i></div>
+                        <h4 class="text-xl font-bold text-white mb-2">Content Creation</h4>
+                        <p class="text-gray-400">We produce high-quality esports content including match broadcasts, highlights, and player interviews.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tournaments Section -->
+    <section id="tournaments" class="py-20 bg-[#0a1929]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="orbitron text-3xl md:text-4xl font-bold text-center text-blue-500 mb-12">TOURNAMENTS</h2>
+            
+            <!-- Upcoming Tournaments -->
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-white mb-8">Upcoming Tournaments</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="upcomingTournaments">
+                    <div class="bg-[#0f2942] rounded-lg p-6 card-hover">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">Registration Open</span>
+                            <span class="text-gray-400">Prize Pool: ₹100,000</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">BGMI Pro League Season 5</h4>
+                        <p class="text-gray-400 mb-4">Date: March 15, 2024</p>
+                        <button onclick="registerTournament('BGMI Pro League Season 5')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded transition duration-300">Register Now</button>
+                    </div>
+                    <div class="bg-[#0f2942] rounded-lg p-6 card-hover">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-green-500 text-white px-3 py-1 rounded-full text-sm">Registration Open</span>
+                            <span class="text-gray-400">Prize Pool: ₹75,000</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">Summer Showdown 2024</h4>
+                        <p class="text-gray-400 mb-4">Date: April 5, 2024</p>
+                        <button onclick="registerTournament('Summer Showdown 2024')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded transition duration-300">Register Now</button>
+                    </div>
+                    <div class="bg-[#0f2942] rounded-lg p-6 card-hover">
+                        <div class="flex justify-between items-center mb-4">
+                            <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-sm">Coming Soon</span>
+                            <span class="text-gray-400">Prize Pool: ₹150,000</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">Indian Esports Cup</h4>
+                        <p class="text-gray-400 mb-4">Date: May 10, 2024</p>
+                        <button class="w-full bg-gray-500 text-white font-bold py-2 rounded cursor-not-allowed">Registration Opens April 1</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous Tournaments -->
+            <div>
+                <h3 class="text-2xl font-bold text-white mb-8">Previous Tournaments</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="previousTournaments">
+                    <div class="bg-[#0f2942] rounded-lg p-6">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=2670&auto=format&fit=crop" alt="Winter Championship" class="rounded-lg w-full h-40 object-cover">
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">Winter Championship 2023</h4>
+                        <p class="text-gray-400 mb-2">Winner: Team Dominators</p>
+                        <p class="text-gray-400 mb-4">Prize: ₹50,000</p>
+                        <button onclick="viewTournamentDetails('Winter Championship 2023')" class="w-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:bg-opacity-10 font-bold py-2 rounded transition duration-300">View Details</button>
+                    </div>
+                    <div class="bg-[#0f2942] rounded-lg p-6">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=2670&auto=format&fit=crop" alt="BGMI Masters" class="rounded-lg w-full h-40 object-cover">
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">BGMI Masters 2023</h4>
+                        <p class="text-gray-400 mb-2">Winner: Team Phoenix</p>
+                        <p class="text-gray-400 mb-4">Prize: ₹75,000</p>
+                        <button onclick="viewTournamentDetails('BGMI Masters 2023')" class="w-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:bg-opacity-10 font-bold py-2 rounded transition duration-300">View Details</button>
+                    </div>
+                    <div class="bg-[#0f2942] rounded-lg p-6">
+                        <div class="mb-4">
+                            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2671&auto=format&fit=crop" alt="Fall Invitational" class="rounded-lg w-full h-40 object-cover">
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-2">Fall Invitational 2023</h4>
+                        <p class="text-gray-400 mb-2">Winner: Team Vortex</p>
+                        <p class="text-gray-400 mb-4">Prize: ₹60,000</p>
+                        <button onclick="viewTournamentDetails('Fall Invitational 2023')" class="w-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:bg-opacity-10 font-bold py-2 rounded transition duration-300">View Details</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tournament Calendar -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-white mb-8">Tournament Calendar</h3>
+                <div class="bg-[#0f2942] rounded-lg p-6">
+                    <div class="grid grid-cols-7 gap-2 text-center mb-4">
+                        <div class="text-gray-400">Sun</div>
+                        <div class="text-gray-400">Mon</div>
+                        <div class="text-gray-400">Tue</div>
+                        <div class="text-gray-400">Wed</div>
+                        <div class="text-gray-400">Thu</div>
+                        <div class="text-gray-400">Fri</div>
+                        <div class="text-gray-400">Sat</div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-2 text-center">
+                        <div class="p-2 text-gray-500">25</div>
+                        <div class="p-2 text-gray-500">26</div>
+                        <div class="p-2 text-gray-500">27</div>
+                        <div class="p-2 text-gray-500">28</div>
+                        <div class="p-2 text-gray-500">29</div>
+                        <div class="p-2 text-white">1</div>
+                        <div class="p-2 text-white">2</div>
+                        <div class="p-2 text-white">3</div>
+                        <div class="p-2 text-white">4</div>
+                        <div class="p-2 text-white">5</div>
+                        <div class="p-2 text-white">6</div>
+                        <div class="p-2 text-white">7</div>
+                        <div class="p-2 text-white">8</div>
+                        <div class="p-2 text-white">9</div>
+                        <div class="p-2 text-white">10</div>
+                        <div class="p-2 text-white">11</div>
+                        <div class="p-2 text-white">12</div>
+                        <div class="p-2 text-white">13</div>
+                        <div class="p-2 text-white">14</div>
+                        <div class="p-2 text-white">15</div>
+                        <div class="p-2 text-white bg-blue-500 rounded-lg">16</div>
+                        <div class="p-2 text-white">17</div>
+                        <div class="p-2 text-white">18</div>
+                        <div class="p-2 text-white">19</div>
+                        <div class="p-2 text-white">20</div>
+                        <div class="p-2 text-white">21</div>
+                        <div class="p-2 text-white">22</div>
+                        <div class="p-2 text-white">23</div>
+                        <div class="p-2 text-white">24</div>
+                        <div class="p-2 text-white">25</div>
+                        <div class="p-2 text-white">26</div>
+                        <div class="p-2 text-white">27</div>
+                        <div class="p-2 text-white">28</div>
+                        <div class="p-2 text-white">29</div>
+                        <div class="p-2 text-white">30</div>
+                        <div class="p-2 text-white">31</div>
+                        <div class="p-2 text-gray-500">1</div>
+                        <div class="p-2 text-gray-500">2</div>
+                        <div class="p-2 text-gray-500">3</div>
+                        <div class="p-2 text-gray-500">4</div>
+                        <div class="p-2 text-gray-500">5</div>
+                        <div class="p-2 text-gray-500">6</div>
+                    </div>
+                    <div class="mt-6 flex items-center">
+                        <div class="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                        <span class="text-gray-300">BGMI Qualifying Round - March 16</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="py-20 bg-[#0f2942]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="orbitron text-3xl md:text-4xl font-bold text-center text-blue-500 mb-12">OUR TEAM</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-[#0a1929] rounded-lg p-6 text-center card-hover">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-700 flex items-center justify-center text-5xl text-blue-500">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Shubham Mahadik</h3>
+                    <p class="text-blue-500 mb-4">Founder</p>
+                    <p class="text-gray-400 mb-6">"Building the future of Indian esports"</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="bg-[#0a1929] rounded-lg p-6 text-center card-hover">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-700 flex items-center justify-center text-5xl text-blue-500">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Ram Mishra</h3>
+                    <p class="text-blue-500 mb-4">CEO</p>
+                    <p class="text-gray-400 mb-6">"Driving excellence in competitive gaming"</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="bg-[#0a1929] rounded-lg p-6 text-center card-hover">
+                    <div class="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-700 flex items-center justify-center text-5xl text-blue-500">
+                        <i class="bi bi-person"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Akshit Mishra</h3>
+                    <p class="text-blue-500 mb-4">COO</p>
+                    <p class="text-gray-400 mb-6">"Operations maestro for seamless gaming"</p>
+                    <div class="flex justify-center space-x-3">
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Professional Players -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-white mb-8 text-center">Our Professional Players</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="bg-[#0a1929] p-4 rounded-lg text-center">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gray-700"></div>
+                        <h4 class="font-bold text-white">Akshay "ArcticWolf" Singh</h4>
+                        <p class="text-blue-500 text-sm">Team Captain</p>
+                    </div>
+                    <div class="bg-[#0a1929] p-4 rounded-lg text-center">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gray-700"></div>
+                        <h4 class="font-bold text-white">Rajat "Sniper" Verma</h4>
+                        <p class="text-blue-500 text-sm">Sharpshooter</p>
+                    </div>
+                    <div class="bg-[#0a1929] p-4 rounded-lg text-center">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gray-700"></div>
+                        <h4 class="font-bold text-white">Prateek "Shadow" Joshi</h4>
+                        <p class="text-blue-500 text-sm">Stealth Expert</p>
+                    </div>
+                    <div class="bg-[#0a1929] p-4 rounded-lg text-center">
+                        <div class="w-16 h-16 mx-auto mb-2 rounded-full bg-gray-700"></div>
+                        <h4 class="font-bold text-white">Vikram "Viper" Mehta</h4>
+                        <p class="text-blue-500 text-sm">Assault Specialist</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-[#0a1929]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="orbitron text-3xl md:text-4xl font-bold text-center text-blue-500 mb-12">CONTACT US</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <form id="contactForm" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-300 mb-2">Name</label>
+                            <input type="text" id="name" class="w-full bg-[#0f2942] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Email</label>
+                            <input type="email" id="email" class="w-full bg-[#0f2942] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Subject</label>
+                            <select id="subject" class="w-full bg-[#0f2942] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="general">General Inquiry</option>
+                                <option value="tournament">Tournament Information</option>
+                                <option value="sponsorship">Sponsorship Opportunities</option>
+                                <option value="careers">Careers & Recruitment</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 mb-2">Message</label>
+                            <textarea id="message" rows="4" class="w-full bg-[#0f2942] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded transition duration-300">Send Message</button>
+                    </form>
+                </div>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Connect With Us</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-300 hover:text-blue-500 text-2xl"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="text-gray-300 hover:text-blue-500 text-2xl"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="text-gray-300 hover:text-blue-500 text-2xl"><i class="bi bi-discord"></i></a>
+                            <a href="#" class="text-gray-300 hover:text-blue-500 text-2xl"><i class="bi bi-youtube"></i></a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Location</h3>
+                        <p class="text-gray-300">Mumbai, Maharashtra, India</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Email</h3>
+                        <p class="text-gray-300">contact@effortlessesports.com</p>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white mb-4">Join Our Discord</h3>
+                        <p class="text-gray-300 mb-4">Connect with players, participate in community tournaments, and stay updated on all events.</p>
+                        <a href="#" class="bg-[#5865F2] hover:bg-[#4752C4] text-white font-bold py-2 px-6 rounded inline-flex items-center transition duration-300">
+                            <i class="bi bi-discord mr-2"></i>
+                            Join Server
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Analysis Modal -->
+    <div id="aiAnalysisModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white">BGMI Battle Analysis</h3>
+                <span class="text-gray-400 cursor-pointer text-2xl" id="closeAnalysisModal">&times;</span>
+            </div>
+            <div class="mb-6">
+                <p class="text-gray-300 mb-4">Upload your gameplay screenshot or video for AI-powered analysis and improvement suggestions.</p>
+                <div class="border-2 border-dashed border-blue-500 rounded-lg p-6 text-center">
+                    <input type="file" id="gameplayFile" class="hidden" accept="image/*, video/*">
+                    <label for="gameplayFile" class="cursor-pointer">
+                        <div class="text-blue-500 text-4xl mb-2"><i class="bi bi-cloud-arrow-up"></i></div>
+                        <p class="text-gray-300">Click to upload image or video</p>
+                        <p class="text-gray-400 text-sm mt-2">Max file size: 10MB</p>
+                    </label>
+                </div>
+                <div id="filePreview" class="mt-4 hidden">
+                    <img id="previewImage" class="max-h-60 mx-auto rounded-lg" />
+                </div>
+            </div>
+            <div id="analysisResult" class="bg-[#0a1929] p-4 rounded-lg mb-6 hidden">
+                <h4 class="font-bold text-white mb-2">Analysis Results</h4>
+                <div id="analysisContent" class="text-gray-300"></div>
+            </div>
+            <div class="flex justify-end">
+                <button id="analyzeGameplay" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-6 rounded transition duration-300 disabled:bg-gray-500 disabled:cursor-not-allowed" disabled>
+                    Analyze Gameplay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tournament Registration Modal -->
+    <div id="registrationModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white">Tournament Registration</h3>
+                <span class="text-gray-400 cursor-pointer text-2xl" id="closeRegModal">&times;</span>
+            </div>
+            <form id="tournamentRegistrationForm" class="space-y-4">
+                <input type="hidden" id="tournamentName">
+                <div>
+                    <label class="block text-gray-300 mb-2">Team Name</label>
+                    <input type="text" id="teamName" class="w-full bg-[#0a1929] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Team Leader Name</label>
+                    <input type="text" id="leaderName" class="w-full bg-[#0a1929] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Contact Email</label>
+                    <input type="email" id="contactEmail" class="w-full bg-[#0a1929] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-300 mb-2">Contact Phone</label>
+                    <input type="tel" id="contactPhone" class="w-full bg-[#0a1929] text-white rounded p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="pt-4">
+                    <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded transition duration-300">Submit Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tournament Details Modal -->
+    <div id="tournamentDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-white" id="detailsTournamentName">Tournament Details</h3>
+                <span class="text-gray-400 cursor-pointer text-2xl" id="closeDetailsModal">&times;</span>
+            </div>
+            <div class="space-y-4" id="tournamentDetailsContent">
+                <!-- Content will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-[#0f2942] py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h4 class="orbitron text-xl font-bold text-white mb-4">EFFORTLESS ESPORTS</h4>
+                    <p class="text-gray-400">Bringing professional BGMI gaming to every aspiring player in India.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-blue-500 transition-colors duration-200">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-blue-500 transition-colors duration-200">About Us</a></li>
+                        <li><a href="#tournaments" class="text-gray-400 hover:text-blue-500 transition-colors duration-200">Tournaments</a></li>
+                        <li><a href="#team" class="text-gray-400 hover:text-blue-500 transition-colors duration-200">Our Team</a></li>
+                        <li><a href="#contact" class="text-gray-400 hover:text-blue-500 transition-colors duration-200">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Follow Us</h4>
+                    <div class="flex space-x-3">
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors duration-200"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors duration-200"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors duration-200"><i class="bi bi-discord"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-blue-500 transition-colors duration-200"><i class="bi bi-youtube"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-white mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-2">Subscribe for tournament updates</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="bg-[#0a1929] text-white rounded-l p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full">
+                        <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-r transition duration-300">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-8 text-center">
+                <p class="text-gray-400">© 2024 Effortless Esports. All rights reserved.</p>
+                <div class="mt-4 flex justify-center space-x-4">
+                    <a href="#" class="text-gray-400 hover:text-blue-500 text-sm transition-colors duration-200">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-blue-500 text-sm transition-colors duration-200">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-blue-500 text-sm transition-colors duration-200">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // App Slug for MongoDB
+        const APP_SLUG = "effortless-esports-23456";
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Counter animation
+        function animateCounters() {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counters = document.querySelectorAll('#tournamentCounter, #playerCounter, #teamCounter, #prizepoolCounter');
+                        counters.forEach(counter => {
+                            const targetValue = counter.id === 'tournamentCounter' ? 50 :
+                                              counter.id === 'playerCounter' ? 1000 :
+                                              counter.id === 'teamCounter' ? 25 :
+                                              5000000;
+                            
+                            const prefix = counter.id === 'prizepoolCounter' ? '₹' : '';
+                            const suffix = '+';
+                            
+                            let currentValue = 0;
+                            const increment = targetValue / 50;
+                            const duration = 1500;
+                            const interval = duration / 50;
+                            
+                            const timer = setInterval(() => {
+                                currentValue += increment;
+                                if (currentValue >= targetValue) {
+                                    clearInterval(timer);
+                                    counter.textContent = `${prefix}${Math.floor(targetValue).toLocaleString()}${suffix}`;
+                                } else {
+                                    counter.textContent = `${prefix}${Math.floor(currentValue).toLocaleString()}${suffix}`;
+                                }
+                            }, interval);
+                        });
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const statsSection = document.querySelector('.game-stats');
+            if (statsSection) {
+                observer.observe(statsSection);
+            }
+        }
+
+        // Tournament registration function
+        function registerTournament(tournamentName) {
+            const tournamentNameField = document.getElementById('tournamentName');
+            tournamentNameField.value = tournamentName;
+            
+            const registrationModal = document.getElementById('registrationModal');
+            registrationModal.style.display = 'block';
+        }
+
+        // View Tournament Details
+        function viewTournamentDetails(tournamentName) {
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            loadingSpinner.style.display = 'flex';
+            
+            // Set tournament name in modal title
+            document.getElementById('detailsTournamentName').textContent = tournamentName;
+            
+            // Simulate fetching tournament details
+            setTimeout(() => {
+                const tournamentDetailsContent = document.getElementById('tournamentDetailsContent');
+                
+                if (tournamentName === 'Winter Championship 2023') {
+                    tournamentDetailsContent.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=2670&auto=format&fit=crop" alt="Winter Championship" class="w-full h-60 object-cover rounded-lg mb-4">
+                        <h4 class="text-xl font-bold text-white mb-2">Winter Championship 2023</h4>
+                        <p class="text-gray-400 mb-4">December 12-15, 2023</p>
+                        <div class="bg-[#0a1929] p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-white mb-2">Final Standings</h5>
+                            <ol class="space-y-2 text-gray-300">
+                                <li class="flex justify-between items-center"><span>1. Team Dominators</span> <span class="text-blue-500">₹50,000</span></li>
+                                <li class="flex justify-between items-center"><span>2. Team Phoenix</span> <span class="text-blue-500">₹25,000</span></li>
+                                <li class="flex justify-between items-center"><span>3. Team Vortex</span> <span class="text-blue-500">₹10,000</span></li>
+                            </ol>
+                        </div>
+                        <div class="bg-[#0a1929] p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-white mb-2">Tournament Highlights</h5>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• 32 teams participated</li>
+                                <li>• 12 matches played</li>
+                                <li>• MVP: ArcticWolf with 45 kills</li>
+                                <li>• Highest team kills: Team Dominators (78)</li>
+                            </ul>
+                        </div>
+                        <div class="text-center">
+                            <a href="#" class="text-blue-500 hover:underline">Watch Highlights on YouTube</a>
+                        </div>
+                    `;
+                } else if (tournamentName === 'BGMI Masters 2023') {
+                    tournamentDetailsContent.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=2670&auto=format&fit=crop" alt="BGMI Masters" class="w-full h-60 object-cover rounded-lg mb-4">
+                        <h4 class="text-xl font-bold text-white mb-2">BGMI Masters 2023</h4>
+                        <p class="text-gray-400 mb-4">August 5-8, 2023</p>
+                        <div class="bg-[#0a1929] p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-white mb-2">Final Standings</h5>
+                            <ol class="space-y-2 text-gray-300">
+                                <li class="flex justify-between items-center"><span>1. Team Phoenix</span> <span class="text-blue-500">₹75,000</span></li>
+                                <li class="flex justify-between items-center"><span>2. Team Titans</span> <span class="text-blue-500">₹40,000</span></li>
+                                <li class="flex justify-between items-center"><span>3. Team Alpha</span> <span class="text-blue-500">₹20,000</span></li>
+                            </ol>
+                        </div>
+                        <div class="bg-[#0a1929] p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-white mb-2">Tournament Highlights</h5>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• 48 teams participated</li>
+                                <li>• 16 matches played</li>
+                                <li>• MVP: Sniper with 52 kills</li>
+                                <li>• Highest team kills: Team Phoenix (92)</li>
+                            </ul>
+                        </div>
+                        <div class="text-center">
+                            <a href="#" class="text-blue-500 hover:underline">Watch Highlights on YouTube</a>
+                        </div>
+                    `;
+                } else if (tournamentName === 'Fall Invitational 2023') {
+                    tournamentDetailsContent.innerHTML = `
+                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2671&auto=format&fit=crop" alt="Fall Invitational" class="w-full h-60 object-cover rounded-lg mb-4">
+                        <h4 class="text-xl font-bold text-white mb-2">Fall Invitational 2023</h4>
+                        <p class="text-gray-400 mb-4">October 20-22, 2023</p>
+                        <div class="bg-[#0a1929] p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-white mb-2">Final Standings</h5>
+                            <ol class="space-y-2 text-gray-300">
+                                <li class="flex justify-between items-center"><span>1. Team Vortex</span> <span class="text-blue-500">₹60,000</span></li>
+                                <li class="flex justify-between items-center"><span>2. Team Dominators</span> <span class="text-blue-500">₹30,000</span></li>
+                                <li class="flex justify-between items-center"><span>3. Team Omega</span> <span class="text-blue-500">₹15,000</span></li>
+                            </ol>
+                        </div>
+                        <div class="bg-[#0a1929] p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-white mb-2">Tournament Highlights</h5>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• 24 teams participated (invitation only)</li>
+                                <li>• 10 matches played</li>
+                                <li>• MVP: Shadow with 38 kills</li>
+                                <li>• Highest team kills: Team Vortex (84)</li>
+                            </ul>
+                        </div>
+                        <div class="text-center">
+                            <a href="#" class="text-blue-500 hover:underline">Watch Highlights on YouTube</a>
+                        </div>
+                    `;
+                }
+                
+                loadingSpinner.style.display = 'none';
+                document.getElementById('tournamentDetailsModal').style.display = 'block';
+            }, 1500);
+        }
+
+        // Contact form submission
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            loadingSpinner.style.display = 'flex';
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject') ? document.getElementById('subject').value : 'Contact Form',
+                message: document.getElementById('message').value,
+                dateSubmitted: new Date().toISOString()
+            };
+
+            try {
+                // Store contact submission in MongoDB
+                const response = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        appSlug: APP_SLUG,
+                        action: 'create',
+                        collection: 'contacts',
+                        data: formData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert('Message sent successfully! We will get back to you soon.');
+                    contactForm.reset();
+                } else {
+                    throw new Error('Failed to submit form');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error sending your message. Please try again later.');
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        // Tournament Registration form
+        const tournamentRegistrationForm = document.getElementById('tournamentRegistrationForm');
+        tournamentRegistrationForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            loadingSpinner.style.display = 'flex';
+
+            const registrationData = {
+                tournamentName: document.getElementById('tournamentName').value,
+                teamName: document.getElementById('teamName').value,
+                leaderName: document.getElementById('leaderName').value,
+                contactEmail: document.getElementById('contactEmail').value,
+                contactPhone: document.getElementById('contactPhone').value,
+                registrationDate: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            try {
+                // Store registration in MongoDB
+                const response = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        appSlug: APP_SLUG,
+                        action: 'create',
+                        collection: 'tournament_registrations',
+                        data: registrationData
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    alert(`Registration for ${registrationData.tournamentName} submitted successfully! Our team will contact you shortly with further details.`);
+                    tournamentRegistrationForm.reset();
+                    document.getElementById('registrationModal').style.display = 'none';
+                } else {
+                    throw new Error('Failed to submit registration');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error submitting your registration. Please try again later.');
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        // AI Analysis functionality
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const aiAnalysisModal = document.getElementById('aiAnalysisModal');
+        const closeAnalysisModal = document.getElementById('closeAnalysisModal');
+        const gameplayFile = document.getElementById('gameplayFile');
+        const filePreview = document.getElementById('filePreview');
+        const previewImage = document.getElementById('previewImage');
+        const analyzeGameplay = document.getElementById('analyzeGameplay');
+        const analysisResult = document.getElementById('analysisResult');
+        const analysisContent = document.getElementById('analysisContent');
+
+        analyzeBtn.addEventListener('click', () => {
+            aiAnalysisModal.style.display = 'block';
+        });
+
+        closeAnalysisModal.addEventListener('click', () => {
+            aiAnalysisModal.style.display = 'none';
+            filePreview.classList.add('hidden');
+            analysisResult.classList.add('hidden');
+            gameplayFile.value = '';
+        });
+
+        gameplayFile.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const file = e.target.files[0];
+                
+                // Check if file is an image
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        previewImage.src = event.target.result;
+                        filePreview.classList.remove('hidden');
+                        analyzeGameplay.disabled = false;
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file for analysis');
+                    gameplayFile.value = '';
+                }
+            }
+        });
+
+        analyzeGameplay.addEventListener('click', async () => {
+            if (!gameplayFile.files || !gameplayFile.files[0]) {
+                alert('Please upload an image first');
+                return;
+            }
+
+            const loadingSpinner = document.getElementById('loadingSpinner');
+            loadingSpinner.style.display = 'flex';
+            
+            try {
+                // First upload the image to storage
+                const file = gameplayFile.files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('userId', 'effortless-user');
+                formData.append('appSlug', APP_SLUG);
+
+                // Upload file
+                const uploadResponse = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/storage/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: formData
+                });
+
+                const uploadResult = await uploadResponse.json();
+                
+                if (!uploadResult.success) {
+                    throw new Error('Failed to upload image');
+                }
+                
+                // Now use AI to analyze the image
+                const aiResponse = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/ai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: "user",
+                                content: [
+                                    {
+                                        type: "text",
+                                        text: "Analyze this BGMI (Battlegrounds Mobile India) gameplay screenshot. Provide tactical feedback and improvement suggestions. Focus on positioning, weapon choices, and strategy based on what you can see."
+                                    },
+                                    {
+                                        type: "image_url",
+                                        image_url: {
+                                            url: uploadResult.url
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    })
+                });
+
+                const aiResult = await aiResponse.json();
+                
+                // Display the analysis
+                analysisContent.innerHTML = aiResult.message.replace(/\n/g, '<br>');
+                analysisResult.classList.remove('hidden');
+                
+                // Store the analysis in MongoDB
+                await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        appSlug: APP_SLUG,
+                        action: 'create',
+                        collection: 'gameplay_analyses',
+                        data: {
+                            imageUrl: uploadResult.url,
+                            analysis: aiResult.message,
+                            timestamp: new Date().toISOString()
+                        }
+                    })
+                });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                alert('There was an error analyzing your gameplay. Please try again later.');
+            } finally {
+                loadingSpinner.style.display = 'none';
+            }
+        });
+
+        // Modal close handlers
+        document.getElementById('closeRegModal').addEventListener('click', () => {
+            document.getElementById('registrationModal').style.display = 'none';
+        });
+
+        document.getElementById('closeDetailsModal').addEventListener('click', () => {
+            document.getElementById('tournamentDetailsModal').style.display = 'none';
+        });
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (e) => {
+            if (e.target === document.getElementById('registrationModal')) {
+                document.getElementById('registrationModal').style.display = 'none';
+            }
+            if (e.target === document.getElementById('tournamentDetailsModal')) {
+                document.getElementById('tournamentDetailsModal').style.display = 'none';
+            }
+            if (e.target === document.getElementById('aiAnalysisModal')) {
+                document.getElementById('aiAnalysisModal').style.display = 'none';
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Close mobile menu if open
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Initialize animations when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            animateCounters();
+        });
+
+        // Load upcoming tournaments from database (simulated)
+        async function loadTournaments() {
+            try {
+                // Fetch upcoming tournaments
+                const upcomingResponse = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        appSlug: APP_SLUG,
+                        action: 'read',
+                        collection: 'tournaments',
+                        conditions: { status: 'upcoming' }
+                    })
+                });
+                
+                const upcomingResult = await upcomingResponse.json();
+                
+                // If no tournaments in DB yet, we'll skip this (uses default HTML)
+                if (upcomingResult.success && upcomingResult.result.length > 0) {
+                    const upcomingTournamentsContainer = document.getElementById('upcomingTournaments');
+                    upcomingTournamentsContainer.innerHTML = '';
+                    
+                    upcomingResult.result.forEach(tournament => {
+                        const tournamentCard = document.createElement('div');
+                        tournamentCard.className = 'bg-[#0f2942] rounded-lg p-6 card-hover';
+                        tournamentCard.innerHTML = `
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="bg-${tournament.registrationOpen ? 'green' : 'yellow'}-500 text-white px-3 py-1 rounded-full text-sm">
+                                    ${tournament.registrationOpen ? 'Registration Open' : 'Coming Soon'}
+                                </span>
+                                <span class="text-gray-400">Prize Pool: ₹${tournament.prizePool.toLocaleString()}</span>
+                            </div>
+                            <h4 class="text-xl font-bold text-white mb-2">${tournament.name}</h4>
+                            <p class="text-gray-400 mb-4">Date: ${new Date(tournament.date).toLocaleDateString()}</p>
+                            <button onclick="registerTournament('${tournament.name}')" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded transition duration-300"
+                                ${!tournament.registrationOpen ? 'disabled style="background-color: #718096; cursor: not-allowed;"' : ''}>
+                                ${tournament.registrationOpen ? 'Register Now' : `Registration Opens ${new Date(tournament.registrationOpens).toLocaleDateString()}`}
+                            </button>
+                        `;
+                        upcomingTournamentsContainer.appendChild(tournamentCard);
+                    });
+                }
+                
+                // Fetch past tournaments
+                const pastResponse = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        appSlug: APP_SLUG,
+                        action: 'read',
+                        collection: 'tournaments',
+                        conditions: { status: 'completed' }
+                    })
+                });
+                
+                const pastResult = await pastResponse.json();
+                
+                // If no tournaments in DB yet, we'll skip this (uses default HTML)
+                if (pastResult.success && pastResult.result.length > 0) {
+                    const previousTournamentsContainer = document.getElementById('previousTournaments');
+                    previousTournamentsContainer.innerHTML = '';
+                    
+                    pastResult.result.forEach(tournament => {
+                        const tournamentCard = document.createElement('div');
+                        tournamentCard.className = 'bg-[#0f2942] rounded-lg p-6';
+                        tournamentCard.innerHTML = `
+                            <div class="mb-4">
+                                <img src="${tournament.imageUrl || 'https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=2670&auto=format&fit=crop'}" alt="${tournament.name}" class="rounded-lg w-full h-40 object-cover">
+                            </div>
+                            <h4 class="text-xl font-bold text-white mb-2">${tournament.name}</h4>
+                            <p class="text-gray-400 mb-2">Winner: ${tournament.winner}</p>
+                            <p class="text-gray-400 mb-4">Prize: ₹${tournament.winnerPrize.toLocaleString()}</p>
+                            <button onclick="viewTournamentDetails('${tournament.name}')" class="w-full border border-blue-500 text-blue-500 hover:bg-blue-500 hover:bg-opacity-10 font-bold py-2 rounded transition duration-300">
+                                View Details
+                            </button>
+                        `;
+                        previousTournamentsContainer.appendChild(tournamentCard);
+                    });
+                }
+                
+            } catch (error) {
+                console.error('Error loading tournaments:', error);
+            }
+        }
+        
+        // We'll initialize the app with some tournament data if none exists
+        async function initializeAppData() {
+            // Initialize the tournament data if not already present
+            try {
+                // Check if tournaments collection already has data
+                const response = await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                    },
+                    body: JSON.stringify({
+                        appSlug: APP_SLUG,
+                        action: 'read',
+                        collection: 'tournaments'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success && result.result.length === 0) {
+                    // No data exists, so let's add some initial tournaments
+                    const upcomingTournaments = [
+                        {
+                            name: "BGMI Pro League Season 5",
+                            date: new Date("2024-03-15").toISOString(),
+                            registrationOpen: true,
+                            prizePool: 100000,
+                            status: "upcoming",
+                            description: "The premier BGMI tournament in India",
+                            venue: "Online and Mumbai Finals",
+                            maxTeams: 64
+                        },
+                        {
+                            name: "Summer Showdown 2024",
+                            date: new Date("2024-04-05").toISOString(),
+                            registrationOpen: true,
+                            prizePool: 75000,
+                            status: "upcoming",
+                            description: "Hot action in this summer tournament",
+                            venue: "Online",
+                            maxTeams: 32
+                        },
+                        {
+                            name: "Indian Esports Cup",
+                            date: new Date("2024-05-10").toISOString(),
+                            registrationOpen: false,
+                            registrationOpens: new Date("2024-04-01").toISOString(),
+                            prizePool: 150000,
+                            status: "upcoming",
+                            description: "The biggest BGMI tournament of the year",
+                            venue: "Delhi Stadium Finals",
+                            maxTeams: 128
+                        }
+                    ];
+                    
+                    const pastTournaments = [
+                        {
+                            name: "Winter Championship 2023",
+                            date: new Date("2023-12-12").toISOString(),
+                            winner: "Team Dominators",
+                            winnerPrize: 50000,
+                            status: "completed",
+                            description: "Winter themed BGMI tournament",
+                            imageUrl: "https://images.unsplash.com/photo-1560253023-3ec5d502959f?q=80&w=2670&auto=format&fit=crop"
+                        },
+                        {
+                            name: "BGMI Masters 2023",
+                            date: new Date("2023-08-05").toISOString(),
+                            winner: "Team Phoenix",
+                            winnerPrize: 75000,
+                            status: "completed",
+                            description: "Master level BGMI competition",
+                            imageUrl: "https://images.unsplash.com/photo-1627856013091-fed6e4e30025?q=80&w=2670&auto=format&fit=crop"
+                        },
+                        {
+                            name: "Fall Invitational 2023",
+                            date: new Date("2023-10-20").toISOString(),
+                            winner: "Team Vortex",
+                            winnerPrize: 60000,
+                            status: "completed",
+                            description: "Invitation-only top tier tournament",
+                            imageUrl: "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2671&auto=format&fit=crop"
+                        }
+                    ];
+                    
+                    // Add all tournaments to database
+                    const allTournaments = [...upcomingTournaments, ...pastTournaments];
+                    for (const tournament of allTournaments) {
+                        await fetch('https://r0c8kgwocscg8gsokogwwsw4.zetaverse.one/mongodb', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': 'Bearer 382XtU7o9AXIlionoNTGSMjH4mR2'
+                            },
+                            body: JSON.stringify({
+                                appSlug: APP_SLUG,
+                                action: 'create',
+                                collection: 'tournaments',
+                                data: tournament
+                            })
+                        });
+                    }
+                }
+                
+                // Now load tournaments from the database
+                await loadTournaments();
+            } catch (error) {
+                console.error('Error initializing app data:', error);
+            }
+        }
+        
+        // Initialize app
+        initializeAppData();
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
